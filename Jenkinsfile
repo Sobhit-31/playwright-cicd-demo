@@ -43,6 +43,9 @@ pipeline {
 
     stages {
         stage('Checkout Code') {
+            when {
+        branch 'main'  // ✅ Run this stage only if build is triggered from 'main' branch
+    }
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/Sobhit-31/playwright-cicd-demo.git']]])
             }
@@ -78,5 +81,17 @@ pipeline {
         failure {
             echo 'Build FAILED!'
         }
+    }
+
+    triggers {
+        pollSCM('') // Needed to allow webhook triggers
+    }
+
+    stages {
+        // your stages (Checkout, Build Docker, Run Tests, etc.)
+    }
+
+    post {
+        // your post actions (archive, cleanup, etc.)
     }
 }
