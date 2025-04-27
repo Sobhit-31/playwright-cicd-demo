@@ -21,7 +21,7 @@ test.describe('Login Functionality', () => {
 
     // Step 3: Verify Dashboard
     await test.step('Verify dashboard is visible', async () => {
-      const dashboard = await loginPage.isDashboardVisible();
+      const dashboard = await loginPage.isDashboardVisible(expect);
       await expect(dashboard, 'Dashboard should be visible after login').toBeVisible();
     });
 
