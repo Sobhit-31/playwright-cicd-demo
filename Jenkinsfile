@@ -59,7 +59,14 @@ pipeline {
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    bat "docker run --rm ${DOCKER_IMAGE}"
+                    githubNotify context: 'Build', status: 'PENDING', description: 'Running Playwright Tests...'
+                    try {
+                        bat "docker run --rm ${DOCKER_IMAGE}"
+                        githubNotify context: 'Build', status: 'SUCCESS', description: 'Tests Passed!'
+                    } catch (e) {
+                        githubNotify context: 'Build', status: 'FAILURE', description: 'Tests Failed!'
+                        throw e
+                    }
                 }
             }
         }
@@ -79,5 +86,4 @@ pipeline {
             echo 'Build FAILED!'
         }
     }
-    
 }
