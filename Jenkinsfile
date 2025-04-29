@@ -127,20 +127,11 @@ pipeline {
             steps {
                 script {
                     githubNotify context: 'Build', status: 'PENDING', description: 'Running Playwright Tests...'
-                    try {
-                        // Run container with a fixed name
+                    // Instead of try-catch-throw, use catchError
+                    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                         bat "docker run --name playwright_container ${DOCKER_IMAGE}"
-
-                        // Copy Playwright report
                         bat "docker cp playwright_container:/app/playwright-report ./playwright-report"
-
-                        // Remove the container after copying
                         bat "docker rm playwright_container"
-
-                        githubNotify context: 'Build', status: 'SUCCESS', description: 'Tests Passed!'
-                    } catch (e) {
-                        githubNotify context: 'Build', status: 'FAILURE', description: 'Tests Failed!'
-                        throw e
                     }
                 }
             }
@@ -162,12 +153,11 @@ pipeline {
 <p><strong>Build Number:</strong> #${env.BUILD_NUMBER}</p>
 <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">View Build</a></p>
 <p><strong>Triggered By:</strong> ${env.BUILD_USER_ID ?: 'Timer/Cron/Auto'}</p>
-<p><strong>Attached Playwright HTML Report Below ⬇️</strong></p>
+<p><strong>Playwright report is generated in Jenkins Workspace ⬇️</strong></p>
 </body>
 </html>
 """,
-                    mimeType: 'text/html',
-                    // attachmentsPattern: '**/playwright-report/index.html'
+                    mimeType: 'text/html'
                 )
             }
         }
@@ -186,12 +176,11 @@ pipeline {
 <p><strong>Build Number:</strong> #${env.BUILD_NUMBER}</p>
 <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">View Build</a></p>
 <p><strong>Triggered By:</strong> ${env.BUILD_USER_ID ?: 'Timer/Cron/Auto'}</p>
-<p><strong>Attached Playwright HTML Report Below ⬇️</strong></p>
+<p><strong>Playwright report is generated in Jenkins Workspace ⬇️</strong></p>
 </body>
 </html>
 """,
-                    mimeType: 'text/html',
-                    // attachmentsPattern: '**/playwright-report/index.html'
+                    mimeType: 'text/html'
                 )
             }
         }
@@ -204,5 +193,4 @@ pipeline {
         }
     }
 }
-
 
