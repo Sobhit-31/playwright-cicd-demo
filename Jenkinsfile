@@ -167,7 +167,7 @@ pipeline {
 </html>
 """,
                     mimeType: 'text/html',
-                    attachmentsPattern: '**/playwright-report/index.html'
+                    // attachmentsPattern: '**/playwright-report/index.html'
                 )
             }
         }
@@ -191,7 +191,7 @@ pipeline {
 </html>
 """,
                     mimeType: 'text/html',
-                    attachmentsPattern: '**/playwright-report/index.html'
+                    // attachmentsPattern: '**/playwright-report/index.html'
                 )
             }
         }
@@ -204,3 +204,5 @@ pipeline {
         }
     }
 }
+
+
