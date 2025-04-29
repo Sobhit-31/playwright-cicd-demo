@@ -11,7 +11,7 @@ export class LoginPage {
     await this.page.fill('input[name="username"]', username);
     await this.page.waitForTimeout(1000);
     await this.page.fill('input[name="password"]', password);
-    
+    await this.page.waitForTimeout(1000);
     await this.page.click('button[type="submit"]');
   }
 
