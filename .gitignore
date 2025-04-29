@@ -3,3 +3,7 @@ dist/
 playwright-report/
 allure-report/
 .env
+test-results/.last-run.json
+test-results/login-Login-Functionality--1a6a2-an-log-in-and-see-dashboard/test-failed-1.png
+test-results/login-Login-Functionality--1a6a2-an-log-in-and-see-dashboard/video.webm
+test-results/.last-run.json

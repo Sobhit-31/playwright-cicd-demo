@@ -12,4 +12,4 @@ RUN npm install
 COPY . .
 
 # Run tests (this can be overridden by Docker Compose or Jenkins)
-CMD ["npx", "playwright", "test"]
+CMD ["npx", "playwright", "test", "--reporter=html"]
