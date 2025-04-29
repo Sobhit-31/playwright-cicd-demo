@@ -105,8 +105,6 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'playwright-tests'
-        // SLACK_CHANNEL = '#your-channel-name'
-        // SLACK_CREDENTIALS_ID = 'slack-webhook' // if you are using with credential ID, otherwise slackSend without it
         EMAIL_RECIPIENTS = 'sobhit.mahalinga@knowledgeexcel.com'
     }
 
@@ -130,8 +128,15 @@ pipeline {
                 script {
                     githubNotify context: 'Build', status: 'PENDING', description: 'Running Playwright Tests...'
                     try {
-                        bat "docker run --rm ${DOCKER_IMAGE}"
-                        bat "docker cp $(docker ps -alq):/app/playwright-report ./playwright-report"
+                        // Run container with a fixed name
+                        bat "docker run --name playwright_container ${DOCKER_IMAGE}"
+
+                        // Copy Playwright report
+                        bat "docker cp playwright_container:/app/playwright-report ./playwright-report"
+
+                        // Remove the container after copying
+                        bat "docker rm playwright_container"
+
                         githubNotify context: 'Build', status: 'SUCCESS', description: 'Tests Passed!'
                     } catch (e) {
                         githubNotify context: 'Build', status: 'FAILURE', description: 'Tests Failed!'
@@ -146,18 +151,6 @@ pipeline {
         success {
             echo 'Build SUCCESS!'
             script {
-                slackSend (
-                    channel: env.SLACK_CHANNEL,
-                    color: 'good',
-                    message: """
-*✅ Build SUCCESS!*
-*Project:* ${env.JOB_NAME}
-*Build Number:* #${env.BUILD_NUMBER}
-*Build URL:* ${env.BUILD_URL}
-*Triggered By:* ${env.BUILD_USER_ID ?: 'Timer/Cron/Auto'}
-"""
-                )
-
                 emailext (
                     to: env.EMAIL_RECIPIENTS,
                     subject: "✅ Jenkins SUCCESS: ${env.JOB_NAME} [#${env.BUILD_NUMBER}]",
@@ -173,8 +166,8 @@ pipeline {
 </body>
 </html>
 """,
-mimeType: 'text/html',
-attachmentsPattern: '**/playwright-report/index.html'
+                    mimeType: 'text/html',
+                    attachmentsPattern: '**/playwright-report/index.html'
                 )
             }
         }
@@ -182,18 +175,6 @@ attachmentsPattern: '**/playwright-report/index.html'
         failure {
             echo 'Build FAILED!'
             script {
-                slackSend (
-                    channel: env.SLACK_CHANNEL,
-                    color: 'danger',
-                    message: """
-*❌ Build FAILED!*
-*Project:* ${env.JOB_NAME}
-*Build Number:* #${env.BUILD_NUMBER}
-*Build URL:* ${env.BUILD_URL}
-*Triggered By:* ${env.BUILD_USER_ID ?: 'Timer/Cron/Auto'}
-"""
-                )
-
                 emailext (
                     to: env.EMAIL_RECIPIENTS,
                     subject: "❌ Jenkins FAILURE: ${env.JOB_NAME} [#${env.BUILD_NUMBER}]",
@@ -209,8 +190,8 @@ attachmentsPattern: '**/playwright-report/index.html'
 </body>
 </html>
 """,
-mimeType: 'text/html',
-attachmentsPattern: '**/playwright-report/index.html'
+                    mimeType: 'text/html',
+                    attachmentsPattern: '**/playwright-report/index.html'
                 )
             }
         }
@@ -218,7 +199,7 @@ attachmentsPattern: '**/playwright-report/index.html'
         always {
             echo 'Cleaning up Docker image...'
             script {
-                bat "docker rmi ${DOCKER_IMAGE} || true"
+                bat "docker rmi ${DOCKER_IMAGE} || exit 0"
             }
         }
     }
