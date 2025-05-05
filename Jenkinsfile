@@ -127,7 +127,7 @@ pipeline {
             steps {
                 script {
                     // githubNotify context: 'Build', status: 'PENDING', description: 'Running Playwright Tests...'
-                    // Instead of try-catch-throw, use catchError
+                    
                     catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                         bat "docker run --name playwright_container ${DOCKER_IMAGE}"
                         bat "docker cp playwright_container:/app/playwright-report ./playwright-report"

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx playwright test",
+    "allure:generate": "allure generate ./allure-results --clean -o ./allure-report",
+    "allure:open": "allure open ./allure-report"
   },
   "keywords": [],
   "author": "",
@@ -11,6 +13,7 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.2",
+    "allure-playwright": "^3.2.1",
     "playwright": "^1.52.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
