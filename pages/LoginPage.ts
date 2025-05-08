@@ -1,21 +1,19 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 export class LoginPage {
-  constructor(private page: Page) {}
+    constructor(private page: Page) {}
 
-  async goto() {
-    await this.page.goto('https://opensource-demo.orangehrmlive.com');
-  }
+    async goto() {
+        await this.page.goto('https://www.saucedemo.com');
+    }
 
-  async login(username: string, password: string) {
-    await this.page.fill('input[name="username"]', username);
-    await this.page.waitForTimeout(1000);
-    await this.page.fill('input[name="password"]', password);
-    // await this.page.waitForTimeout(1000);
-    await this.page.click('button[type="submit"]');
-  }
+    async login(username: string, password: string) {
+        await this.page.fill('#user-name', username);
+        await this.page.fill('#password', password);
+        await this.page.click('#login-button');
+    }
 
-  async isDashboardVisible() {
-    return this.page.locator('h6:has-text("Dashboard")');
-  }
+    async isProductsPageVisible() {
+        return await this.page.locator('.title').isVisible();
+    }
 }
