@@ -105,7 +105,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'playwright-tests'
-        EMAIL_RECIPIENTS = 'sobhit.mahalinga@knowledgeexcel.com'
+        EMAIL_RECIPIENTS = 'sobhit325@gmail.com'
     }
 
     stages {
